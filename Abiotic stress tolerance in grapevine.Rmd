@@ -1,5 +1,5 @@
 ---
-title: Jax_Abiotic stress tolerance in grapevines
+title: Abiotic stress tolerance in grapevines
 subtitle: 
 author:  Steve Henderson
 affiliation: CSIRO Agriculture and Food
