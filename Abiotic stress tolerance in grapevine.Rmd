@@ -3,7 +3,7 @@ title: Abiotic stress tolerance in grapevines
 subtitle: 
 author:  Steve Henderson
 affiliation: CSIRO Agriculture and Food
-photo: resources/img/photo.jpeg
+photo: resources/img/photo.jpg
 
 short_title: Abiotic stress in grapevine
 
@@ -35,10 +35,10 @@ library(ggfortify) #helps with PCA analysis
 
 
 # Introduction
-I am located in Agriculture and Food at the Waite Campus, Adelaide. Looking back through the annals of time, I suppose I have a fairly broad background in various fields such as fungal genetics, human biochemistry, and cancer proteomics. In the last ten years, I was primarily involved in the use of plant molecular genetics to isolate the causal loci for apomixis (the process of asexual reproduction through seed). I am currently transitioning into grapevine research for viticulture and am involved in a project investigating genetic and mechanistic aspects of abiotic stress in grapevines. Data School has been a steep learning curve for me as I had no prior coding experience, and previous bioinformatic tasks I had directly undertaken typically involved GUI based software such as Geneious and Excel.
+I am located in Agriculture and Food at the Waite Campus, Adelaide. I have a relatively broad background in various fields such as fungal genetics, human biochemistry, and proteomics. In the last ten years, I was primarily involved in the use of plant molecular genetics to isolate the causal loci for apomixis (the process of asexual reproduction through seed). I am currently transitioning into grapevine research for viticulture and am involved in a project investigating genetic and mechanistic aspects of abiotic stress in grapevines. Data School has been a steep learning curve for me as I had no prior coding experience, and previous bioinformatic tasks I had directly undertaken typically involved GUI based software such as Geneious and Excel.
 
 # My Project
-The dataset used is chloride ion measurements in the leaves of a segregating grapevine mapping population subjected to salt and/or heat treatments. This chloride analysis is a subset of a substantially larger experiment investigating abiotic stress which includes state of the art imaging analysis in a plant accelerator to determine growth rates and water usage. The ultimate goal is to be able to use R as a more rigourous and effective analysis pipeline for all aspects of the experiment. The immediate goals for this dataset in Data School: Focus was to evaulate the utility of R for analysing chloride data subset, and to identify potential sources of variation within the data. 
+The dataset I used for Data School consists of chloride ion measurements in the leaves of a grapevine mapping population subjected to salt and/or heat treatments. These chloride measurements are a subset of a substantially larger experiment investigating abiotic stress which includes state of the art imaging analysis in a plant accelerator to determine growth rates and water usage. The ultimate goal is to be able to use R to develop rigourous, effective, and reproducible analyses pipelines for all aspects of the experiment. The immediate goals for this dataset in Data School was to evaluate the utility of R in analysing the chloride data subset, and to identify potential sources of variation within the data. 
 
 
 
@@ -1077,22 +1077,58 @@ cl_dry_weight_calc <- chloride_3_tidy$cl_dry_weight_calc
 
 ## Preliminary results
 
-INSERT BLURB HERE
+
+In this experiment, a grapevine population was subjected to the following salt and heat treatments to assess the effects on chloride uptake into the leaves:
+
+* no salt, no heat (control)
+* salt, no heat
+* no salt, heat
+* salt, heat
+
+Three biological replicates of each grapevine were assessed in each treatment group and the chloride measurement was undertaken in duplicate.
+
+
+Initial analyses were focussed on assessing the distribution and robustness of the data as follows:
+
+First, an assessment of the distribution of the chloride measurements in each treatment group indicated there was a positive skew in these data. This is shown in the representative histogram of the leaf chloride levels in the control group (Figure 1). QQ plots of the calculated chloride data further supported the notion that the data was not normally distributed (representative plot of the control group shown in Figure 2. Four different statistical tests (Shapiro-Wilk; Anderson-Darling; Kolmogorov-Smirnov; Cramer-von Mises) were performed and further confirmed that the data was highly unlikely to be normal (data not shown). Together, these anayses indicates that the data is not normally distributed and non-parametric statistical tests will be required for future statistical analysis of this dataset. 
+
+Second, the consistency of the three biological data replicates was visually assessed for each treatment group (Figure 3). The median and data distribution for the three biological replicates was largely consistent with the exception of the heat & salt treatment group where replicate 1 had a higher median than the other two biological replicates, the significance and any potential ramifications of this difference will be examined further.
+
+Third, as the harvesting of leaf samples was undertaken by multiple people, the data generated by each harvester were visualised to determine if there were any notable variations (Figure 4). Overall the data distrubtions looked relatively consistent between harvesters. Some variation was expected due to genotypic differences in the grapevine lines analysed.
+
+Based on the preliminary analysis above, the data appears to be positively skewed but reasonably robust.
+
+
+
+In terms of the experimental results, the analyses clearly shows that at basal salt levels, heat has little effect on salt uptake. However, when exposed to high salinity, heat has a substantial effect on the uptake of chloride ions into grapevine leaves (Figure 5). 
+
+Furthermore, there is substantial variation between the individual grapevine lines in the uptake of chloride in the presence of high salinity with and without heat (Figure 6.) and likely reflects segregation of genetic factors within the grapevine mapping population. This will be a particular point of interest in future analyses.
 
 
 
 
-```{r standard-plot1, out.width='60%', fig.align='center', fig.height= 4, fig.width=6, fig.cap="Histogram showing skew in chloride dry weight measurements"}
 
-hist(cl_dry_weight_calc, main = " ", xlab = "Leaf chloride dry weight (mg)")
+
+
+```{r standard-plot1, out.width='60%', fig.align='center', fig.height= 4, fig.width=10, fig.cap="Distribution of leaf chloride measurements in control treatment group"}
+
+
+nhns <- chloride_3_tidy %>% 
+  filter(treatment_heat == "no_heat", treatment_salt == "no_salt")
+
+nhns1 <- nhns$cl_dry_weight_calc
+
+hist(nhns1, main = " ", xlab = "Leaf chloride content")
 ```
 
 
-**Plots from R**
-```{r standard-plot2, out.width='60%', fig.align='center', fig.height= 4, fig.width=6, fig.cap="QQ Norm plot of leaf chloride dry weight"}
 
-qqnorm(cl_dry_weight_calc)
-qqline(cl_dry_weight_calc, col="red")
+
+
+```{r standard-plot2, out.width='60%', fig.align='center', fig.height= 4, fig.width=6, fig.cap="QQ Norm plot of leaf chloride content"}
+
+qqnorm(nhns1)
+qqline(nhns1, col="red")
 ```
 
 
@@ -1101,28 +1137,26 @@ qqline(cl_dry_weight_calc, col="red")
 
 
 
-```{r standard-plot4, out.width='60%', fig.align='center', fig.height= 8, fig.width=5, fig.cap="Comparison of biological reps"}
+```{r standard-plot3, out.width='60%', fig.align='center', fig.height= 8, fig.width=15, fig.cap="Comparison of biological reps"}
 
 #check biological reps 
 
 plot_0b <- chloride_4_tidy %>%
   ggplot(aes(x=bio_rep, y=cl_dry_weight_calc, group = bio_rep, colour = treatment, shape = tech_rep)) +
-  geom_jitter(size = 2, alpha =0.5,))+
-  stat_summary(
+  geom_jitter(size = 2, alpha =0.5)+
+  theme(axis.text.x=element_text(size=15, angle=0), axis.title=element_text(size=15), axis.text.y=element_text(size=15), legend.title = element_text(size=15), legend.text = element_text(size=15), legend.position = "bottom")+
+  guides(colour=guide_legend(override.aes=list(size=3)))+
+ylab("Leaf chloride content")+  
+xlab("Biological replicate")+
+    stat_summary(
     geom = "point",
     fun.y = "median",
     col ="black",
     size = 3,
     shape = 23, fill = "brown",
    )+
-  stat_summary(
-    geom = "point",
-    fun.y = "mean",
-    col="black",
-    size = 3,
-    shape =22, fill = "green",
-   )+
-  facet_wrap(~treatment)  
+  facet_wrap(~treatment)+
+  theme(strip.text.x = element_text(size = 15))
 
 plot_0b
 
@@ -1131,37 +1165,7 @@ plot_0b
 
 
 
-```{r standard-plot5, out.width='60%', fig.align='center', fig.height=8, fig.width=5, fig.cap="Comparison of biological reps"}
-
-#compare effects of heat and salt treatments
-
-#combined treatments into a single column and combined bio_reps
-plot_1a <- chloride_3_tidy %>%
-  unite(col = "treatment", "treatment_heat", "treatment_salt", sep = "_&_") %>% 
-  ggplot(aes(x=treatment, y=cl_dry_weight_calc, colour = treatment)) +
-  geom_jitter(size = 2, alpha =0.5)+
-  theme(legend.position = "bottom")+
-  stat_summary(
-    geom = "point",
-    fun.y = "median",
-    col ="black",
-    size = 3,
-    shape = 23, fill = "brown",
-    )+
-  stat_summary(
-    geom = "point",
-    fun.y = "mean",
-    col="black",
-    size = 3,
-    shape =22, fill = "green"
-  )
-
-plot_1a
-
-```
-
-
-```{r standard-plot6, out.width='100%', fig.align='center', fig.height= 10, fig.width=20, fig.cap="Comparison of biological reps"}
+```{r standard-plot4, out.width='100%', fig.align='center', fig.height= 10, fig.width=15, fig.cap="leaf chloride content in samples harvested by different people"}
 
 
 #Check harvester effects - as per 1a but harvester separated
@@ -1169,21 +1173,16 @@ plot_2a <- chloride_3_tidy %>%
   unite(col = "treatment", "treatment_heat", "treatment_salt", sep = "_&_") %>% 
   ggplot(aes(x=harvester, y=cl_dry_weight_calc, colour = treatment)) +
   geom_jitter(size = 2, alpha =0.5)+
-  theme(axis.text.x=element_text(size=15, angle=45), axis.title=element_text(size=15), axis.text.y=element_text(size=15), legend.title = element_text(size=15), legend.text = element_text(size=15), legend.position = "bottom")+
+  theme(axis.text.x=element_text(size=15, angle=45, hjust=1), axis.title=element_text(size=15), axis.text.y=element_text(size=15), legend.title = element_text(size=15), legend.text = element_text(size=15), legend.position = "bottom")+
   guides(colour=guide_legend(override.aes=list(size=3)))+
-  stat_summary(
+ylab("Leaf chloride content")+
+xlab("Harvester")+
+      stat_summary(
     geom = "point",
     fun.y = "median",
     col ="black",
     size = 3,
     shape = 23, fill = "brown",
-    )+
-  stat_summary(
-    geom = "point",
-    fun.y = "mean",
-    col="black",
-    size = 3,
-    shape =22, fill = "green",
     )+
   facet_grid(~treatment, scales = "fixed")+
          theme(strip.text.x = element_text(size = 15))
@@ -1195,38 +1194,50 @@ plot_2a
 
 
 
-#sample weight vs cl dry weight - full dataset
 
-plot_3a <- chloride_4_tidy %>%
-  ggplot(aes(x=cl_sample_weight_mg, y = cl_dry_weight_calc, colour = treatment)) +
-  geom_point(size = 2, alpha =0.5)+
-  facet_wrap(~treatment)
-plot_3a
+```{r standard-plot5, out.width='60%', fig.align='center', fig.height=8, fig.width=10, fig.cap="Comparison of biological reps"}
 
+#compare effects of heat and salt treatments
 
-#cl dry weight vs treatments
-plot_3b <- chloride_3_tidy %>%
-  ggplot(aes(x=treatment_salt, y = cl_dry_weight_calc, colour = treatment_heat)) +
+#combined treatments into a single column and combined bio_reps
+plot_1a <- chloride_3_tidy %>%
+  unite(col = "treatment", "treatment_heat", "treatment_salt", sep = "_&_") %>% 
+  ggplot(aes(x=treatment, y=cl_dry_weight_calc, colour = treatment)) +
   geom_jitter(size = 2, alpha =0.5)+
-  geom_smooth(method="lm")
-plot_3b
+   theme(axis.text.x=element_text(size=15, angle=45, hjust=1), axis.title=element_text(size=15), axis.text.y=element_text(size=15), legend.title = element_text(size=15), legend.text = element_text(size=15), legend.position = "bottom")+
+  guides(colour=guide_legend(override.aes=list(size=3)))+
+ylab("Leaf chloride content")+
+xlab("Treatment")+
+    stat_summary(
+    geom = "point",
+    fun.y = "median",
+    col ="black",
+    size = 3,
+    shape = 23, fill = "brown",
+    )
 
-#salt effects
+plot_1a
 
-#heat and salt effects
-
-#harvester effects
-
-#tech rep comparisons
-
-#biological replicate comparisons
+```
 
 
-plot_4 <- chloride_4_tidy %>%
-  group_by(harvester) %>% 
-  ggplot(aes(x=harvester,  y = cl_dry_weight_calc, colour = treatment)) +
-  geom_jitter()
-plot_4
+
+
+
+```{r standard-plot6, out.width='60%', fig.align='center', fig.height=8, fig.width=15, fig.cap="Leaf chloride content in each grapevine line"}
+
+#compare effects of heat and salt treatments
+
+#combined treatments into a single column and combined bio_reps
+plot_100 <- chloride_4_tidy %>%
+  ggplot(aes(x=reorder(genotype_id, cl_dry_weight_calc, FUN = median), y=cl_dry_weight_calc, colour = treatment))+
+  xlab("Grapevine lines")+
+  ylab("Leaf chloride content")+
+  geom_boxplot(size=0.5)+
+  theme(axis.text.x = element_text(angle=90, hjust =1), legend.title = element_text(size=15), legend.text = element_text(size=15), legend.position = "bottom")
+
+plot_100
+
 ```
 
 
@@ -1234,29 +1245,25 @@ plot_4
 
 
 
-
-
-Your figure and table captions are automatically numbered and can be referenced in the text
-if needed: see eg. Table \@ref(tab:mytable) and Figure \@ref(fig:standard-plot)
-
 # My Digital Toolbox
 
-What digital tools have you been using in your project? Which ones have you learned since starting 
-Data School?
+It quickly became apparent that utilising R effectively requires a flexible mindset in trying and using tools available in R packages outside of the tidyverse. In my analyses, I used tools available in the following packages:
 
-You can use all the usual R markdown features in writing a project summary, including lists:
-
-* R - dplyr, ggplot, ...
-* Python
-* SQL
+* ggplot2
+* readxl
+* plyr
+* dplyr
+* janitor
+* rowr
+* nortest
+* pca3d
+* ggfortify
 
 ## Favourite tool (optional)
 
-Is there a tool/package/function in particular that you've enjoyed using? Give it a special shout out here.
+* Github: This was particularly useful as I was developing the code with three different computers at various times.
 
-![](https://raw.githubusercontent.com/tidyverse/ggplot2/master/man/figures/logo.png){.pull-right width=100px}
-
-No prizes for guessing mine:
+* R Markdown: This is a fantastic tool to efficiently communicate results to others and fits seamlessly with the version control properties of Git.  
 
 # My time went ...
 
@@ -1269,6 +1276,7 @@ The most surprising and frustrating challenge I encountered was my inability to 
 The online material readily accessible to beginneRs always seem to use the same inbuilt 'perfect' datasets, so issues associated with 'real-world' datasets are typically not addressed and can be extremely time consuming to overcome. 
 
 # Next steps
+
 
 Data School: Focus has provided an excellent foundation in data analyses using R, and in data management in general. Clearly, there is much still to be learned and I am keen to continue to apply and expand on these newly acquired skills in my future project work. I will be expanding the preliminary analyses presented here to the complete experimental dataset and work with the Project Leader and team members towards implementing R analyses pipelines in future experiments.     
 
