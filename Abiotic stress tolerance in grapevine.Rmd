@@ -1100,6 +1100,7 @@ Based on the preliminary analysis above, the data appears to be positively skewe
 
 
 
+
 In terms of the experimental results, the analyses clearly shows that at basal salt levels, heat has little effect on salt uptake. However, when exposed to high salinity, heat has a substantial effect on the uptake of chloride ions into grapevine leaves (Figure 5). 
 
 Furthermore, there is substantial variation between the individual grapevine lines in the uptake of chloride in the presence of high salinity with and without heat (Figure 6.) and likely reflects segregation of genetic factors within the grapevine mapping population. This will be a particular point of interest in future analyses.
@@ -1137,7 +1138,7 @@ qqline(nhns1, col="red")
 
 
 
-```{r standard-plot3, out.width='60%', fig.align='center', fig.height= 8, fig.width=15, fig.cap="Comparison of biological reps"}
+```{r standard-plot3, out.width='100%', fig.align='center', fig.height= 8, fig.width=15, fig.cap="Comparison of biological reps"}
 
 #check biological reps 
 
@@ -1224,13 +1225,13 @@ plot_1a
 
 
 
-```{r standard-plot6, out.width='60%', fig.align='center', fig.height=8, fig.width=15, fig.cap="Leaf chloride content in each grapevine line"}
+```{r standard-plot6, out.width='100%', fig.align='center', fig.height=8, fig.width=15, fig.cap="Leaf chloride content in each grapevine line"}
 
 #compare effects of heat and salt treatments
 
 #combined treatments into a single column and combined bio_reps
 plot_100 <- chloride_4_tidy %>%
-  ggplot(aes(x=reorder(genotype_id, cl_dry_weight_calc, FUN = median), y=cl_dry_weight_calc, colour = treatment))+
+  ggplot(aes(x=genotype_id, y=cl_dry_weight_calc, colour = treatment))+
   xlab("Grapevine lines")+
   ylab("Leaf chloride content")+
   geom_boxplot(size=0.5)+
