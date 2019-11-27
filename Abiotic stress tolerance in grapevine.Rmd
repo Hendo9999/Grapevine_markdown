@@ -11,13 +11,12 @@ output: DSreport::project_summary
 ---
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(
-  results = 'asis',
-  echo = FALSE,
-  warning = FALSE,
-  message = FALSE,
-  fig.align = 'center'
+	echo = FALSE,
+	fig.align = "center",
+	message = FALSE,
+	warning = FALSE,
+	results = "asis"
 )
-
 #Load libraries
 library(tidyverse)
 library(gapminder)
@@ -1108,7 +1107,7 @@ qqline(cl_dry_weight_calc, col="red")
 
 plot_0b <- chloride_4_tidy %>%
   ggplot(aes(x=bio_rep, y=cl_dry_weight_calc, group = bio_rep, colour = treatment, shape = tech_rep)) +
-  geom_jitter(size = 2, alpha =0.5)+
+  geom_jitter(size = 2, alpha =0.5,))+
   stat_summary(
     geom = "point",
     fun.y = "median",
@@ -1141,13 +1140,14 @@ plot_1a <- chloride_3_tidy %>%
   unite(col = "treatment", "treatment_heat", "treatment_salt", sep = "_&_") %>% 
   ggplot(aes(x=treatment, y=cl_dry_weight_calc, colour = treatment)) +
   geom_jitter(size = 2, alpha =0.5)+
+  theme(legend.position = "bottom")+
   stat_summary(
     geom = "point",
     fun.y = "median",
     col ="black",
     size = 3,
-    shape = 23, fill = "brown"
-  )+
+    shape = 23, fill = "brown",
+    )+
   stat_summary(
     geom = "point",
     fun.y = "mean",
@@ -1161,7 +1161,7 @@ plot_1a
 ```
 
 
-```{r standard-plot6, out.width='60%', fig.align='center', fig.height= 5, fig.width=10, fig.cap="Comparison of biological reps"}
+```{r standard-plot6, out.width='100%', fig.align='center', fig.height= 10, fig.width=20, fig.cap="Comparison of biological reps"}
 
 
 #Check harvester effects - as per 1a but harvester separated
@@ -1169,21 +1169,24 @@ plot_2a <- chloride_3_tidy %>%
   unite(col = "treatment", "treatment_heat", "treatment_salt", sep = "_&_") %>% 
   ggplot(aes(x=harvester, y=cl_dry_weight_calc, colour = treatment)) +
   geom_jitter(size = 2, alpha =0.5)+
+  theme(axis.text.x=element_text(size=15, angle=45), axis.title=element_text(size=15), axis.text.y=element_text(size=15), legend.title = element_text(size=15), legend.text = element_text(size=15), legend.position = "bottom")+
+  guides(colour=guide_legend(override.aes=list(size=3)))+
   stat_summary(
     geom = "point",
     fun.y = "median",
     col ="black",
     size = 3,
-    shape = 23, fill = "brown"
-  )+
+    shape = 23, fill = "brown",
+    )+
   stat_summary(
     geom = "point",
     fun.y = "mean",
     col="black",
     size = 3,
-    shape =22, fill = "green"
-  )+
-  facet_grid(~treatment, scales = "fixed")  
+    shape =22, fill = "green",
+    )+
+  facet_grid(~treatment, scales = "fixed")+
+         theme(strip.text.x = element_text(size = 15))
 
 plot_2a
 
