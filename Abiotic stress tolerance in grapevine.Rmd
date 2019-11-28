@@ -1196,7 +1196,7 @@ plot_2a
 
 
 
-```{r standard-plot5, out.width='60%', fig.align='center', fig.height=8, fig.width=10, fig.cap="Comparison of biological reps"}
+```{r standard-plot5, out.width='60%', fig.align='center', fig.height=8, fig.width=10, fig.cap="Leaf chloride content in grapevine with heat &/or salt treatment"}
 
 #compare effects of heat and salt treatments
 
@@ -1248,7 +1248,7 @@ plot_100
 
 # My Digital Toolbox
 
-It quickly became apparent that utilising R effectively requires a flexible mindset in trying and using tools available in R packages outside of the tidyverse. In my analyses, I used tools available in the following packages:
+It quickly became apparent to me that utilising R effectively requires a flexible mindset in trying and using tools available in R packages outside of the tidyverse. In my analyses, I used tools available in the following packages:
 
 * ggplot2
 * readxl
