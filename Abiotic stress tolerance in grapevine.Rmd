@@ -7,12 +7,16 @@ photo: resources/img/photo.jpg
 
 short_title: Abiotic stress in grapevine
 
-output: DSreport::project_summary
+output: 
+  DSreport::project_summary:
+    code_folding: hide
+  
+  
 ---
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(
-	echo = FALSE,
-	fig.align = "center",
+	echo = TRUE,
+		fig.align = "center",
 	message = FALSE,
 	warning = FALSE,
 	results = "asis"
