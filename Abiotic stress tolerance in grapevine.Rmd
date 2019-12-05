@@ -1264,7 +1264,7 @@ It quickly became apparent to me that utilising R effectively requires a flexibl
 * pca3d
 * ggfortify
 
-## Favourite tool (optional)
+## Favourite tool
 
 * Github: This was particularly useful as I was developing the code with three different computers at various times.
 
